@@ -13,6 +13,7 @@ interface CallableResponse{
 
 interface Placas{
   placa: string,
+  data_p: string
 }
 
 /**
@@ -22,7 +23,17 @@ interface Placas{
  * @param {Placas} p - Objeto produto a ser validado.
  * @return {number} - Retorna 0 se válido ou o código de erro.
  **/
-function analyzeProduct(p: string) : number {
+function analyzePlaca(p: Placas) : number {
+  if (!p) {
+    return 1;
+  } else if (p.placa.length != 8) {
+    return 2;
+  }
+  return 0;
+}
+
+// eslint-disable-next-line require-jsdoc
+function analyzePlacaConsultas(p: string) : number {
   if (!p) {
     return 1;
   } else if (p.length != 8) {
@@ -32,7 +43,7 @@ function analyzeProduct(p: string) : number {
 }
 
 /**
- * Função que dado o código de erro obtido na analyzeProduct,
+ * Função que dado o código de erro obtido na analyzePlaca,
  * devolve uma mensagem
  * @param {number} code - Código do erro
  * @return {string} - String com a mensagem de erro.
@@ -52,7 +63,7 @@ function getErrorMessage(code: number) : string {
   return message;
 }
 
-/* export const addNewProduct = functions
+export const addNewProduct = functions
     .region("southamerica-east1")
     .https.onCall(async (data, context) => {
       let result: CallableResponse;
@@ -62,9 +73,10 @@ function getErrorMessage(code: number) : string {
       // criando o objeto que representa o produto (baseado nos parametros)
       const placa = {
         placa: data.placa,
+        data_p: data.data_p,
       };
       // inclua aqui a validacao.
-      const errorCode = analyzeProduct(placa);
+      const errorCode = analyzePlaca(placa);
       const errorMessage = getErrorMessage(errorCode);
       if (errorCode > 0) {
         // gravar o erro no log e preparar o retorno.
@@ -91,7 +103,7 @@ function getErrorMessage(code: number) : string {
 
       // Retornando o objeto result.
       return result;
-    });*/
+    });
 
 export const checarRegularidade = functions.region("southamerica-east1")
     .https.onCall(async (data, context) => {
@@ -99,7 +111,7 @@ export const checarRegularidade = functions.region("southamerica-east1")
 
       const placaVeiculo = data.placa;
 
-      const errorCode = analyzeProduct(placaVeiculo);
+      const errorCode = analyzePlacaConsultas(placaVeiculo);
       const errorMessage = getErrorMessage(errorCode);
       if (errorCode > 0) {
         functions.logger.error("checarPagamentoVeiculos " +
@@ -121,6 +133,7 @@ export const checarRegularidade = functions.region("southamerica-east1")
           const arr = doc.data();
           placaPagamento = {
             placa: arr.placa,
+            data_p: arr.data_p,
           };
           pagamentos.push(placaPagamento);
         });
