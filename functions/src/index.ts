@@ -13,8 +13,7 @@ interface CallableResponse{
 
 interface Placas{
   placa: string,
-  data_p: string,
-  hora_p: string
+  data_p: Date
 }
 
 /**
@@ -74,8 +73,7 @@ export const addNewProduct = functions
       // criando o objeto que representa o produto (baseado nos parametros)
       const placa = {
         placa: data.placa,
-        data_p: data.data_p,
-        hora_p: data.hora_p,
+        data_p: new Date(),
       };
       // inclua aqui a validacao.
       const errorCode = analyzePlaca(placa);
@@ -136,7 +134,6 @@ export const checarRegularidade = functions.region("southamerica-east1")
           placaPagamento = {
             placa: arr.placa,
             data_p: arr.data_p,
-            hora_p: arr.hora_p,
           };
           pagamentos.push(placaPagamento);
         });
